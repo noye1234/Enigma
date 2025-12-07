@@ -1,0 +1,33 @@
+package Engine;
+
+import MachineModel.EnigmaMachineModel;
+import component.Code;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class LoadManagerImpl implements LoadManager, Serializable {
+
+    @Override
+    public <T> T load(String path, Class<T> clazz) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+        File file = new File(path);
+
+        @SuppressWarnings("unchecked")
+        T loadedObject = (T) unmarshaller.unmarshal(file);
+
+        return loadedObject;
+    }
+
+
+
+}
