@@ -1,5 +1,4 @@
 package component;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -12,15 +11,16 @@ public class Code implements Serializable {
     private ArrayList<Long> times=new ArrayList<>();
     private ArrayList<String> orgMessages=new ArrayList<>();
     private ArrayList<String> outMessages=new ArrayList<>();
+    private List<Character> alphabet;
 
-
+    public void setAlphabet(List<Character> alphabet) {
+        this.alphabet = alphabet;
+    }
 
     public Code(Map<Integer,EnigmaRotor> rotors_, List<Integer> order_, EnigmaReflector reflectors_){
         this.rotors=rotors_;
         this.order=order_;
         this.reflectors=reflectors_;
-
-        //Collections.reverse(order);
 
 
         for (int i=0;i<order.size();i++){
@@ -29,6 +29,7 @@ public class Code implements Serializable {
 
 
     }
+
     public void addOrginalMassage(String input) {
         this.orgMessages.add(input);
     }
@@ -42,6 +43,7 @@ public class Code implements Serializable {
     public String processMessage(String input){
         StringBuilder output = new StringBuilder();
         for (char ch : input.toCharArray()) {
+            System.out.println(toString(rotors));
             char processedChar = processChar(Character.toUpperCase(ch));
             output.append(processedChar);
         }
@@ -53,25 +55,26 @@ public class Code implements Serializable {
             rotors.put(order.get(i),new EnigmaRotor(copy_rotors.get(order.get(i))));
         }
     }
-
     public char processChar(char ch) {
 
-        // 1) Advance rotors BEFORE encryption
-        advanceRotors();
+        advanceRotors(); // Always rotate before processing
 
         char currentChar = ch;
 
-        // 2) Forward through rotors (Right → Left)
-        for (int rotorIndex : order) {
-            EnigmaRotor rotor = rotors.get(rotorIndex);
+        // Forward (right → left): last rotor in order is rightmost
+        for (int i = order.size() - 1; i >= 0; i--) {
+            EnigmaRotor rotor = rotors.get(order.get(i));
             currentChar = rotor.forward(currentChar);
         }
 
-        // 3) Reflect
-        currentChar = reflectors.reflect(currentChar);
+        // Reflection
+       // currentChar = reflectors.reflect(currentChar);
+        int indexInput = rotors.get(order.get(0)).getLeft().indexOf(currentChar);
+        indexInput=reflectors.reflectIndex(indexInput);
+        currentChar = rotors.get(order.get(0)).getLeft().charAt(indexInput);
 
-        // 4) Backward through rotors (Left → Right)
-        for (int i = order.size() - 1; i >= 0; i--) {
+        // Backward (left → right): first rotor in order is leftmost
+        for (int i = 0; i < order.size(); i++) {
             EnigmaRotor rotor = rotors.get(order.get(i));
             currentChar = rotor.backward(currentChar);
         }
@@ -79,19 +82,23 @@ public class Code implements Serializable {
         return currentChar;
     }
 
+
+
+
     private void advanceRotors() {
         EnigmaRotor right  = rotors.get(order.get(2));
         EnigmaRotor middle = rotors.get(order.get(1));
         EnigmaRotor left   = rotors.get(order.get(0));
 
+        boolean RightIsNotch= right.isAtNotch();
+        boolean MiddleIsNotch= middle.isAtNotch();
+
         // right תמיד מסתובב
         right.rotate();
 
-        // double-step: אם middle בנוטש לפני הסיבוב או right הגיע לנוטש
-        if (middle.isAtNotch() || right.isAtNotch()) {
+        if (right.isAtNotch()) {
             middle.rotate();
 
-            // אם middle הסתובב והגיע לנוטש, left מסתובב
             if (middle.isAtNotch()) {
                 left.rotate();
             }
@@ -151,7 +158,4 @@ public class Code implements Serializable {
     public  Map<Integer,EnigmaRotor> getRotors(){
         return this.rotors;
     }
-
-
-
 }

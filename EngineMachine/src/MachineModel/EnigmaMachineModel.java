@@ -21,6 +21,10 @@ public class EnigmaMachineModel implements Serializable {
     public void changeRunMode(boolean mode){
         this.run=mode;
     }
+
+    public List<Character> getAlphabet() {
+        return alphabet;
+    }
     public boolean getRunMode(){
         return this.run;
     }
@@ -33,20 +37,16 @@ public class EnigmaMachineModel implements Serializable {
     }
 
 
-
     /** The Main Constructor/Mapper that converts the JAXB object structure into the clean Model. */
     public EnigmaMachineModel(BTEEnigma configData) {
 
        this.alphabet= createAlphabetSet(configData.getABC().trim());
 
-
-        // המרת רשימת הרוטורים: BTERotor -> EnigmaRotor
         this.availableRotors = configData.getBTERotors().getBTERotor().stream()
                 .map(EnigmaRotor::new) // קונסטרוקטור המרה
 
                 .collect(Collectors.toList());
 
-        // המרת רשימת הרפלקטורים: BTEReflector -> EnigmaReflector
         this.availableReflectors = configData.getBTEReflectors().getBTEReflector().stream()
                 .map(EnigmaReflector::new)
                 .collect(Collectors.toList());
@@ -63,9 +63,6 @@ public class EnigmaMachineModel implements Serializable {
     public int getAlphabetSize() {
         return alphabet.size();
     }
-
-    // --- Getters נקיים וברורים ---
-
 
     public List<EnigmaRotor> getAvailableRotors() {
         return availableRotors;

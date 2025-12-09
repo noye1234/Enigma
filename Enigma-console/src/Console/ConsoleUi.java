@@ -114,10 +114,12 @@ public class ConsoleUi {
         }
         System.out.println("Please enter the message to be processed:");
         String message = scanner.nextLine().toLowerCase();
-        if (!this.engine.isMassageValid(message)){
-            System.out.println("Error: Message contains characters not in the machine's alphabet.");
+        String error_validation=engine.validateMessage(message);
+        if (error_validation!=null){
+            System.out.println("Error in message validation: " + error_validation);
             return;
         }
+
 
         List<String> processed_massage_and_time=engine.process(message);
         System.out.println("Processed Message: " + processed_massage_and_time.get(0));

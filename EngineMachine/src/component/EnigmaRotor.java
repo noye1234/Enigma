@@ -14,10 +14,8 @@ public class EnigmaRotor implements Serializable {
     private String left="";
     private  String right="";
     private char startingPosition='O';
-    private  int indexStartingPosition;
-    private int rotationCount;
-    private int ringSetting=0;
-    //private boolean first;
+    private  int indexWindow;
+    private int distanceFromWindow;
 
 
     /** Constructor for copying data from JAXB BTERotor */
@@ -36,7 +34,6 @@ public class EnigmaRotor implements Serializable {
         }
     }
 
-
     public EnigmaRotor(EnigmaRotor other) {
         // העתקת שדות final
         this.rotorId = other.rotorId;
@@ -45,42 +42,33 @@ public class EnigmaRotor implements Serializable {
         this.left = other.left;
         this.right = other.right;
         this.startingPosition = other.startingPosition;
-        this.indexStartingPosition = other.indexStartingPosition;
-        this.rotationCount = other.rotationCount;
+        this.indexWindow = other.indexWindow;
+        this.distanceFromWindow = other.distanceFromWindow;
     }
 
     public int getRotorId() {
         return rotorId;
     }
 
-    public int getNotchPosition() {
-        return notchPosition;
-    }
-    public void setRotationCount(int rotationCount) {
-        this.rotationCount = rotationCount;
-    }
-
-    public char getStartingPosition() {
-        return startingPosition;
-    }
-
     public void setStartingPosition(char startingPosition) {
         int len=this.right.length();
         for (int i=0;i<len;i++) {
             if (this.right.charAt(i)== startingPosition) {
-                this.indexStartingPosition=i;
+                this.indexWindow =i;
                 break;
             }
         }
         this.startingPosition = startingPosition;
+        this.distanceFromWindow = (notchPosition - indexWindow + len) % len;
 
     }
-//    public void setFirst(boolean first) {
-//        this.first = first;
-//    }
+
 
     public String getRight(){
         return right;
+    }
+    public String getLeft(){
+        return left;
     }
 
     public List<RotorMapping> getMappings() {
@@ -90,84 +78,43 @@ public class EnigmaRotor implements Serializable {
     public char forward(char inputChar) {
         int len = left.length();
         int indexInput = right.indexOf(inputChar);
-        int adjustedIndex = (indexInput + indexStartingPosition) % len;
+        int adjustedIndex = (indexInput + indexWindow) % len;
+        System.out.println("Forward mapping in indexWindow " + indexWindow);
         return left.charAt(adjustedIndex);
     }
-
 
 
     public void rotate() {
         int len = left.length();
 
-        indexStartingPosition = (indexStartingPosition + 1) % len;
+        indexWindow = (indexWindow + 1) % len;
 
-        rotationCount = (rotationCount - 1 + len) % len;
+        distanceFromWindow = (distanceFromWindow - 1 + len) % len;
 
-        startingPosition = right.charAt(indexStartingPosition);
+        startingPosition = right.charAt(indexWindow);
     }
 
 
     public boolean isAtNotch() {
-        return rotationCount == 0;
+        return ( distanceFromWindow) == 0;
     }
 
 
     public char backward(char inputChar) {
         int len = left.length();
         int indexInput = left.indexOf(inputChar);
-        int adjustedIndex = (indexInput - indexStartingPosition + len) % len;
+        int adjustedIndex = (indexInput - indexWindow +len) % len;
         return right.charAt(adjustedIndex);
     }
 
 
-
-
-
-
-//    public char forward(char inputChar,boolean[] shouldAdvanceNextRotor) {
-//        int length=left.length();
-//
-//        for (int i=indexStartingPosition; i<length+indexStartingPosition; i++) {
-//            i= i % length;
-//            if (this.right.charAt(i)== inputChar) {
-//                return this.left.charAt(i);
-//            }
-//        }
-//        if (shouldAdvanceNextRotor[0]) {
-//            this.indexStartingPosition=(this.indexStartingPosition+1)%length;
-//        }
-//
-//        if (this.rotationCount==indexStartingPosition){
-//            shouldAdvanceNextRotor[0]=true;
-//        } else {
-//            shouldAdvanceNextRotor[0]=false;
-//        }
-//        throw new IllegalArgumentException("Character not found in rotor mappings: " + inputChar);
-//    }
-//
-//
-//
-//    public char backward(char inputChar) {
-//        int length=left.length();
-//
-//        for (int i=indexStartingPosition; i<length+indexStartingPosition; i++) {
-//            i= i % length;
-//            if (this.left.charAt(i)== inputChar) {
-//                return this.right.charAt(i);
-//            }
-//        }
-//        throw new IllegalArgumentException("Character not found in rotor mappings: " + inputChar);
-//    }
-
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append(this.startingPosition).append("(").append(this.rotationCount).append(")");
+        result.append(this.startingPosition).append("(").append(this.distanceFromWindow).append(")");
         return result.toString();
     }
 
-    public void advance() {
-        int length = left.length();
-        this.indexStartingPosition = (this.indexStartingPosition + 1) % length;
-    }
+
+
 }

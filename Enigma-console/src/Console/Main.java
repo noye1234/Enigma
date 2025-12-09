@@ -7,9 +7,14 @@ public class Main {
     }
 }
 
-// \Users\eelis\Downloads\ex1-sanity-paper-enigma.xml
-//<3,2,1><A22A5A17><1>
-//<3,2,1><D5O2W0><1>
+
 //\Users\eelis\Downloads\save.dat
 
 //\Users\eelis\Downloads\ex1-sanity-small.xml
+//<3,2,1><CCC><1>
+
+
+// \Users\eelis\Downloads\ex1-sanity-paper-enigma.xml
+//<3,2,1><A22A5A17><1>
+//<3,2,1><D5O2W0><1>
+//<1,2,3><ODX><1>

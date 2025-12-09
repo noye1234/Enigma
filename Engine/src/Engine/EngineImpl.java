@@ -1,9 +1,6 @@
 package Engine;
-
-
 import Console.MachineData;
 import jakarta.xml.bind.JAXBException;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +9,11 @@ import java.util.HashSet;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import MachineModel.EnigmaMachineModel;
 import component.*;
 import java.util.Collections;
 import java.util.Random;
 import java.util.stream.Collectors;
-import javax.swing.*;
 
 public class EngineImpl implements Engine, Serializable {
 
@@ -344,93 +339,24 @@ public class EngineImpl implements Engine, Serializable {
         if (str==null){
             return "Invalid code format ";
         }
-        boolean letter=true;
-        int j=0;
-        int k=0;
-        StringBuilder sNumber=new StringBuilder();
-
+        char CharLetter;
         int len=str.length();
         for (int i=0;i<len; i++){
 
-            if (letter){
-                char CharLetter = str.charAt(i);
+            CharLetter = str.charAt(i);
 
-                letter=false;
-                rotors.get(order.get(j)).setStartingPosition(CharLetter);
+            rotors.get(order.get(i)).setStartingPosition(CharLetter);
 
-            }
-            else{
-                k=i;
-                sNumber.setLength(0);
-                while(Character.isDigit(str.charAt(k))){
-                    sNumber.append(str.charAt(k));
-                    k++;
-                    if (k==len){
-                        break;
-                    }
-
-                }
-                i=k-1;
-                letter=true;
-
-                try {
-                    Integer notch = Integer.parseInt(sNumber.toString());
-                    rotors.get(order.get(j)).setRotationCount(notch);
-                    j++;
-
-
-                } catch (NumberFormatException e) {
-                    return "Invalid str notch format: " + str + "insert a number";
-                }
-
-            }
         }
         index[0]++;
-       // int numOfRotors=3;
-        //boolean is_first=true;
 
-//        boolean first=true;
-//        int j=0;
-//        if (str!=null){
-//            for (int i=0;i<numOfRotors*2;i++){
-//                if (j>=order.size()){
-//                    return "Invalid code format ";
-//                }
-//
-//                if (first){
-//                    first=false;
-//                    char startingPosition = str.trim().charAt(0);
-//                    rotors.get(order.get(j)).setStartingPosition(startingPosition);
-//
-//                }
-//                else{
-//                    first=true;
-//
-//                    try {
-//                        Integer notch = Integer.parseInt(str.trim());
-//                        rotors.get(order.get(j)).setRotationCount(notch);
-//
-//                    } catch (NumberFormatException e) {
-//                        return "Invalid str notch format: " + str + "insert a number";
-//                    }
-//                    j++;
-//
-//
-//                }
-//                index[0]++;
-//                str=input[index[0]].trim();
-//                if (str==null){
-//                    return "Invalid code format ";
-//                }
-//            }
-   //     }
         return null;
     }
 
     public String part3(Map<Integer,EnigmaRotor> rotors,ArrayList<Integer> order,String[] input,int[] index ) {
         EnigmaReflector reflector;
-        String valueRome=input[index[0]].trim();
-        int valueNumRome=(int) (valueRome.charAt(0)-'0');
+        String valueRome = input[index[0]].trim();
+        int valueNumRome = (int) (valueRome.charAt(0) - '0');
         if (valueRome == null) {
             return "Invalid code format ";
         }
@@ -451,31 +377,6 @@ public class EngineImpl implements Engine, Serializable {
         return null;
 
 
-//        EnigmaReflector reflector;
-//        String str =input[index[0]].trim();
-//
-//        if (str == null) {
-//            return "Invalid code format ";
-//        }
-//        try {
-//            String rome = str;
-//            //int num = NumberRome.valueOf(rome).toInt();
-//
-//            for (EnigmaReflector r : machineModel.getAvailableReflectors()) {
-//                if (r.getId().equals(rome)) {
-//                    reflector = r;
-//
-//                    reflector.setId(rome);
-//                    this.code.add(new Code(rotors, order, reflector));
-//                    return null;
-//                }
-//            }
-//
-//        } catch (NumberFormatException e) {
-//            return "Invalid str notch format: " + str + "insert a number";
-//        }
-//
-//        return null;
     }
 
 
@@ -510,6 +411,7 @@ public class EngineImpl implements Engine, Serializable {
         if (error!=null){
             return error;
         }
+        this.code.get(getCodeSize()-1).setAlphabet(machineModel.getAlphabet());
         return null;
     }
 
@@ -536,7 +438,7 @@ public class EngineImpl implements Engine, Serializable {
                 if (r.getRotorId() == rotorID) {
                     rotors.put(rotorID, new EnigmaRotor(r));
                     rotors.get(rotorID).setStartingPosition(r.getRight().charAt(random.nextInt(alphabetSize)));
-                    rotors.get(rotorID).setRotationCount(random.nextInt(alphabetSize));
+                   // rotors.get(rotorID).setDistanceFromWindow(random.nextInt(alphabetSize));
                     break;
                 }
             }
@@ -557,9 +459,11 @@ public class EngineImpl implements Engine, Serializable {
                 break;
             }
         }
+        this.code.get(getCodeSize()-1).setAlphabet(machineModel.getAlphabet());
         return this.code.get(getCodeSize()-1);
 
     }
+
     public int getCodeSize(){
         if (this.code==null){
             return 0;
@@ -570,6 +474,7 @@ public class EngineImpl implements Engine, Serializable {
     @Override
     public List<String> process(String message) {
         restartCode();
+
 
 
         Long time_start = System.currentTimeMillis();
@@ -614,9 +519,6 @@ public class EngineImpl implements Engine, Serializable {
         this.machineModel.changeRunMode(false);
     }
 
-    public boolean getRunMode(){
-        return this.machineModel.getRunMode();
-    }
 
     @Override
     public void restartCode(){
@@ -624,17 +526,6 @@ public class EngineImpl implements Engine, Serializable {
 
     }
 
-    public boolean isMassageValid(String message){
-        int len=message.length();
-
-        for (int i=0;i<len;i++){
-            if(machineModel.isInAlphabet(message.charAt(i))){
-                return false;
-            }
-        }
-        return true;
-
-    }
 
     public String getCurrentCode(){
         return this.code.get(getCodeSize()-1).toString(this.code.get(getCodeSize()-1).getRotors());
@@ -661,6 +552,28 @@ public class EngineImpl implements Engine, Serializable {
         } catch (IOException | ClassNotFoundException e) {
             return "Error loading machine state: " + e.getMessage();
         }
+    }
+
+    public String validateMessage(String message){
+        StringBuilder invalidChars = new StringBuilder();
+        int len=message.length();
+        message=message.trim().toUpperCase();
+
+        if (message.length()==0){
+            return "Error: Message is empty.";
+        }
+
+        for (int i=0;i<len;i++){
+            if(!machineModel.isInAlphabet(message.charAt(i))){
+                if (invalidChars.indexOf(String.valueOf(message.charAt(i))) == -1) {
+                    invalidChars.append(message.charAt(i));
+                }
+            }
+        }
+        if (invalidChars.length() > 0) {
+            return "Error: Message contains invalid characters not in the machine's alphabet: " + invalidChars.toString();
+        }
+        return null;
     }
 
 }

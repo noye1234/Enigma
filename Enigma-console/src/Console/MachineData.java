@@ -13,7 +13,7 @@ public class MachineData implements Serializable {
     //private int numPlugPairs;
     public MachineData(){}
 
-    public MachineData(int numRotors, int numReflectors, int sumOfMassages, String currentCode, String origCode) {
+    public MachineData(int numRotors, int numReflectors, int sumOfMassages, String origCode , String currentCode) {
         this.numRotors = numRotors;
         this.numReflectors = numReflectors;
         this.sumOfMassages = sumOfMassages;
