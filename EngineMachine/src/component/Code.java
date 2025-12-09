@@ -43,7 +43,6 @@ public class Code implements Serializable {
     public String processMessage(String input){
         StringBuilder output = new StringBuilder();
         for (char ch : input.toCharArray()) {
-            System.out.println(toString(rotors));
             char processedChar = processChar(Character.toUpperCase(ch));
             output.append(processedChar);
         }

@@ -340,6 +340,10 @@ public class EngineImpl implements Engine, Serializable {
             return "Invalid code format ";
         }
         char CharLetter;
+        String error= validateStartingPosition(str);
+        if (error!=null){
+            return error;
+        }
         int len=str.length();
         for (int i=0;i<len; i++){
 
@@ -360,23 +364,78 @@ public class EngineImpl implements Engine, Serializable {
         if (valueRome == null) {
             return "Invalid code format ";
         }
-        try {
-            String rome = NumberRome.fromInt(valueNumRome).name();
-            for (EnigmaReflector r : machineModel.getAvailableReflectors()) {
-                if (r.getId().equals(rome)) {
-                    reflector = r;
-
-                    reflector.setId(rome);
-                    this.code.add(new Code(rotors, order, reflector));
-                    return null;
-                }
-            }
-        } catch (NumberFormatException e) {
-            return "Invalid str notch format: " + valueRome + "insert a number";
+        String error=isValidReflector(valueRome);
+        if (error!=null){
+            return error;
         }
+
+        if (valueRome.matches("\\d+")) {
+            try {
+                String rome = NumberRome.fromInt(valueNumRome).name();
+                for (EnigmaReflector r : machineModel.getAvailableReflectors()) {
+                    if (r.getId().equals(rome)) {
+                        reflector = r;
+
+                        reflector.setId(rome);
+                        this.code.add(new Code(rotors, order, reflector));
+                        return null;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                return "Invalid str notch format: " + valueRome + "insert a number";
+            }
+        } else if (valueRome.matches("I|II|III|IV|V")) {
+            try {
+                for (EnigmaReflector r : machineModel.getAvailableReflectors()) {
+                    if (r.getId().equals(valueRome)) {
+                        reflector = r;
+
+                        reflector.setId(valueRome);
+                        this.code.add(new Code(rotors, order, reflector));
+                        return null;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                return "Invalid str notch format: " + valueRome + "insert a number/roman number I-V";
+            }
+        } else {
+            return "Invalid str notch format: " + valueRome + "insert a number or roman number I-V";
+
+        }
+
         return null;
 
 
+    }
+
+    public String isValidReflector(String valueRome){
+        if (valueRome.matches("I|II|III|IV|V")==false && valueRome.matches("\\d+")==false){
+            return "Reflector ID "+valueRome+" is not valid. It should be a Roman numeral (I-V) or a number.";
+        }
+
+
+        for (EnigmaReflector r: machineModel.getAvailableReflectors()){
+            if (r.getId().equals(valueRome) || r.getId().equals(NumberRome.fromInt((int)(valueRome.charAt(0)-'0')).name())){
+                return null;
+            }
+
+        }
+        return "Reflector ID "+valueRome+" does not exist in the machine configuration.";
+    }
+
+    public String validateStartingPosition(String str){
+        int len=str.length();
+        str=str.toUpperCase();
+        if (len!=machineModel.getAvailableRotors().size()){
+            return "Number of starting positions "+len+" does not match the number of rotors in the machine "+machineModel.getAvailableRotors().size()+".";
+        }
+        for (int i=0;i<len; i++){
+            char CharLetter = str.charAt(i);
+            if (!machineModel.isInAlphabet(CharLetter)){
+                return "Starting position "+CharLetter+" is not in the machine's alphabet.";
+            }
+        }
+        return null;
     }
 
 

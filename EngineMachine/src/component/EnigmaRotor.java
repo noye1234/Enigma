@@ -79,7 +79,6 @@ public class EnigmaRotor implements Serializable {
         int len = left.length();
         int indexInput = right.indexOf(inputChar);
         int adjustedIndex = (indexInput + indexWindow) % len;
-        System.out.println("Forward mapping in indexWindow " + indexWindow);
         return left.charAt(adjustedIndex);
     }
 
