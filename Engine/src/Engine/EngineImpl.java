@@ -50,7 +50,7 @@ public class EngineImpl implements Engine, Serializable {
 
         if (ids.size() > 5 || ids.isEmpty()) return false;
 
-        List<String> validSet = Arrays.asList(requiredIds).subList(0, ids.size());
+        List<String> validSet = new ArrayList<>(Arrays.asList(requiredIds).subList(0, ids.size()));
 
         for (String id : ids) {
             if (!validSet.contains(id)) return false;
@@ -263,14 +263,14 @@ public class EngineImpl implements Engine, Serializable {
 
                 this.abcSize = this.machineModel.getAlphabetSize();
                 this.isConfigValid = true;
-                System.out.println("✅ Machine configuration loaded and successfully validated.");//remove
+                System.out.println("Machine configuration loaded and successfully validated.");//remove
             } else {
-                System.err.println("❌ XML file contains application errors:");//remove
+                System.err.println("XML file contains application errors:");//remove
                 return errors;
 
             }
         } catch (JAXBException e) {
-            System.err.println("❌ JAXB processing error (XML format/structure invalid).");//remove
+            System.err.println("JAXB processing error (XML format/structure invalid).");//remove
             e.printStackTrace();
         }
         return errors;
@@ -490,7 +490,7 @@ public class EngineImpl implements Engine, Serializable {
                 .collect(Collectors.toList());
 
         Collections.shuffle(rotorIDs, random);
-        List<Integer> activeRotorOrder = rotorIDs.subList(0, requiredRotorCount);
+        List<Integer> activeRotorOrder = new ArrayList<>(rotorIDs.subList(0, requiredRotorCount));
 
         for ( Integer rotorID : activeRotorOrder ) {
             for (EnigmaRotor r : machineModel.getAvailableRotors()) {
@@ -533,7 +533,6 @@ public class EngineImpl implements Engine, Serializable {
     @Override
     public List<String> process(String message) {
         restartCode();
-
 
 
         Long time_start = System.currentTimeMillis();

@@ -95,10 +95,10 @@ public class Code implements Serializable {
         // right תמיד מסתובב
         right.rotate();
 
-        if (right.isAtNotch()) {
+        if (RightIsNotch) {
             middle.rotate();
 
-            if (middle.isAtNotch()) {
+            if (MiddleIsNotch) {
                 left.rotate();
             }
         }

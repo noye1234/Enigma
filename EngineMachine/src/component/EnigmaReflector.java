@@ -53,6 +53,8 @@ public class EnigmaReflector implements Serializable {
 
         this.output = other.output;
         this.alphabet = other.alphabet;
+        this.inputIndexes = other.inputIndexes;
+        this.outputIndexes = other.outputIndexes;
     }
 
 

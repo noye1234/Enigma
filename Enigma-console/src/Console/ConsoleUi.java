@@ -4,11 +4,12 @@ import Engine.EngineImpl;
 import component.Code;
 import component.EnigmaRotor;
 
+import java.io.Serializable;
 import java.util.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-public class ConsoleUi {
+public class ConsoleUi implements Serializable {
     private EngineImpl engine;
     private MachineData machineData;
     private boolean isConfigValid = false;
@@ -154,7 +155,7 @@ public class ConsoleUi {
         int choice = scanner.nextInt();
         scanner.nextLine(); // Clear the newline character
         if (choice==1) {
-            System.out.println("insert file path to load state:");
+            System.out.println("insert file path to load state: (the file must exist and end with .dat )");
             String filePath = scanner.nextLine().trim();
             String error = engine.loadMachineState(filePath);
             if (error!=null){
@@ -173,8 +174,6 @@ public class ConsoleUi {
             String filePath = scanner.nextLine().trim();
             String message=engine.saveMachineState(filePath);
             System.out.println(message);
-
-
         }
     }
 

@@ -1,6 +1,8 @@
 package component;
 
-public enum NumberRome {
+import java.io.Serializable;
+
+public enum NumberRome implements Serializable {
     // הגדרת הקבועים והערך המספרי המשויך להם (1-based)
     I(1),
     II(2),
