@@ -59,7 +59,7 @@ public class EnigmaRotor implements Serializable {
             }
         }
         this.startingPosition = startingPosition;
-        this.distanceFromWindow = (notchPosition - indexWindow + len) % len;
+        this.distanceFromWindow = (notchPosition - (indexWindow+1) + len) % len;
 
     }
 
@@ -77,10 +77,32 @@ public class EnigmaRotor implements Serializable {
 
     public char forward(char inputChar) {
         int len = left.length();
-        int indexInput = right.indexOf(inputChar);
+        int indexInput = left.indexOf(inputChar);
         int adjustedIndex = (indexInput + indexWindow) % len;
-        return left.charAt(adjustedIndex);
+        return right.charAt(adjustedIndex);
     }
+    public int getIndexOfFirst(int index) {
+        return (index + indexWindow+ left.length()) % left.length();
+    }
+
+
+    public int forwardNew(int index) {
+        int len = left.length();
+        int adjustedIndex = (index + indexWindow+ len) % len;
+        char mappedChar = right.charAt(adjustedIndex);
+        adjustedIndex = left.indexOf(mappedChar);
+        adjustedIndex= (adjustedIndex- indexWindow + len) % len;
+        return adjustedIndex;
+
+    }
+
+    public char findCharAtIndex(int index) {
+        int len = left.length();
+        int adjustedIndex = (index - indexWindow + len) % len;
+        return right.charAt(adjustedIndex);
+    }
+
+
 
 
     public void rotate() {
@@ -104,6 +126,16 @@ public class EnigmaRotor implements Serializable {
         int indexInput = left.indexOf(inputChar);
         int adjustedIndex = (indexInput - indexWindow +len) % len;
         return right.charAt(adjustedIndex);
+    }
+
+    public int backwardNew(int index) {
+        int len = left.length();
+        int adjustedIndex = (index + indexWindow + len) % len;
+        char mappedChar = left.charAt(adjustedIndex);
+        adjustedIndex = right.indexOf(mappedChar);
+        adjustedIndex= (adjustedIndex - indexWindow + len) % len;
+        return adjustedIndex;
+
     }
 
 

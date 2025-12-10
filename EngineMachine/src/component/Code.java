@@ -60,25 +60,30 @@ public class Code implements Serializable {
 
         char currentChar = ch;
 
+        int currentIndex = alphabet.indexOf(ch);
+     //   currentIndex =rotors.get(order.get(order.size() - 1)).getIndexOfFirst(currentIndex);
+
+
         // Forward (right → left): last rotor in order is rightmost
         for (int i = order.size() - 1; i >= 0; i--) {
             EnigmaRotor rotor = rotors.get(order.get(i));
-            currentChar = rotor.forward(currentChar);
+            currentIndex = rotor.forwardNew(currentIndex);
+
         }
 
-        // Reflection
-       // currentChar = reflectors.reflect(currentChar);
-        int indexInput = rotors.get(order.get(0)).getLeft().indexOf(currentChar);
-        indexInput=reflectors.reflectIndex(indexInput);
-        currentChar = rotors.get(order.get(0)).getLeft().charAt(indexInput);
+
+        currentIndex=reflectors.reflectIndex(currentIndex);
+
+      //  currentIndex =rotors.get(order.get(0)).getIndexOfFirst(currentIndex);
+
 
         // Backward (left → right): first rotor in order is leftmost
         for (int i = 0; i < order.size(); i++) {
             EnigmaRotor rotor = rotors.get(order.get(i));
-            currentChar = rotor.backward(currentChar);
+            currentIndex = rotor.backwardNew(currentIndex);
         }
 
-        return currentChar;
+        return  alphabet.get(currentIndex);
     }
 
 
@@ -89,16 +94,12 @@ public class Code implements Serializable {
         EnigmaRotor middle = rotors.get(order.get(1));
         EnigmaRotor left   = rotors.get(order.get(0));
 
-        boolean RightIsNotch= right.isAtNotch();
-        boolean MiddleIsNotch= middle.isAtNotch();
-
-        // right תמיד מסתובב
         right.rotate();
 
-        if (RightIsNotch) {
+        if (right.isAtNotch()) {
             middle.rotate();
 
-            if (MiddleIsNotch) {
+            if ( middle.isAtNotch()) {
                 left.rotate();
             }
         }
@@ -157,4 +158,6 @@ public class Code implements Serializable {
     public  Map<Integer,EnigmaRotor> getRotors(){
         return this.rotors;
     }
+
+
 }
