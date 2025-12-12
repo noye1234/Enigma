@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jaxb-ri-4.0">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/Downloads/jaxb-ri-4.0.5" />
+      <root url="file://$USER_HOME$/Downloads/jaxb-ri-4.0.5/docs/download" />
+    </SOURCES>
+  </library>
+</component>
